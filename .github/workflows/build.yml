@@ -2,7 +2,7 @@ name: Build and Deploy to Cloud Run
 on:
   push:
     branches:
-      - init
+      - main
 env:
   PROJECT_ID: passes-b3265
   RUN_REGION: europe-west1
