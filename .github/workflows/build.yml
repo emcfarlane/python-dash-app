@@ -1,0 +1,44 @@
+---
+name: Build and Deploy to Cloud Run
+on:
+  push:
+    branches:
+      - init
+env:
+  PROJECT_ID: passes-b3265
+  RUN_REGION: europe-west1
+  SERVICE_NAME: python-dash-app
+jobs:
+  setup-build-deploy:
+    name: Setup, Build, and Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - id: 'auth'
+        uses: 'google-github-actions/auth@v1'
+        with:
+          workload_identity_provider: 'projects/837980966628/locations/global/workloadIdentityPools/my-pool/providers/my-provider'
+          service_account: 'github@passes-b3265.iam.gserviceaccount.com'
+
+      - name: 'Set up Cloud SDK'
+        uses: 'google-github-actions/setup-gcloud@v1'
+
+      - name: 'Use gcloud CLI'
+        run: 'gcloud info'
+
+      - name: gcloud Set up
+        run: |
+          gcloud config set project $PROJECT_ID
+
+      - name: Build
+        run: |
+          gcloud builds submit -t gcr.io/$PROJECT_ID/$SERVICE_NAME:$GITHUB_SHA
+
+      - name: Deploy
+        run: |
+          gcloud run deploy $SERVICE_NAME \
+            --region $RUN_REGION \
+            --image gcr.io/$PROJECT_ID/$SERVICE_NAME:$GITHUB_SHA \
+            --platform managed

@@ -5,17 +5,11 @@ FROM python:3-slim AS build-env
 ENV PYTHONUNBUFFERED True
 ENV PYTHONIOENCODING utf-8
 
+ENV APP_HOME /app
+WORKDIR $APP_HOME
 COPY requirements.txt requirements.txt
-RUN pip install --user -r requirements.txt
+RUN pip3 install --no-cache-dir -r requirements.txt
 
-COPY . /app
-WORKDIR /app
-
-#FROM gcr.io/distroless/python3
-FROM python:3-slim
-COPY --from=build-env /root/.local /root/.local
-COPY --from=build-env /app /app
-WORKDIR /app
-ENV PATH=/root/.local/bin:$PATH
+COPY . .
 
 CMD exec gunicorn --bind :$PORT --workers 1 --threads 8 --timeout 0 main:app
