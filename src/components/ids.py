@@ -1,0 +1,2 @@
+CHART = "chart"
+DROPDOWN = "dropdown"
