@@ -34,6 +34,7 @@ jobs:
       - name: Build
         run: |
           gcloud builds submit \
+            --quiet \
             --project $PROJECT_ID \
             -t gcr.io/$PROJECT_ID/$SERVICE_NAME:$GITHUB_SHA
 
