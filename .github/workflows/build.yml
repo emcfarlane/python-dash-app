@@ -31,17 +31,16 @@ jobs:
       - name: 'Use gcloud CLI'
         run: 'gcloud info'
 
-      - name: gcloud Set up
-        run: |
-          gcloud config set project $PROJECT_ID
-
       - name: Build
         run: |
-          gcloud builds submit -t gcr.io/$PROJECT_ID/$SERVICE_NAME:$GITHUB_SHA
+          gcloud builds submit \
+            --project $PROJECT_ID \
+            -t gcr.io/$PROJECT_ID/$SERVICE_NAME:$GITHUB_SHA
 
       - name: Deploy
         run: |
           gcloud run deploy $SERVICE_NAME \
+            --project $PROJECT_ID \
             --region $RUN_REGION \
             --image gcr.io/$PROJECT_ID/$SERVICE_NAME:$GITHUB_SHA \
             --platform managed
