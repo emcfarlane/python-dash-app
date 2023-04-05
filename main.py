@@ -1,4 +1,4 @@
-from dash import Dash, html
+from dash import Dash
 from flask import Flask
 from os import environ
 from src.components.layout import create_layout
